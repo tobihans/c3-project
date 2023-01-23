@@ -110,7 +110,7 @@ jobs:
           keys: 
           - frontend-build
       - run:
-          name: Test front-end
+          name: Scan front-end
           command: |
             cd frontend
             npm install
@@ -125,7 +125,7 @@ jobs:
           keys: 
           - backend-build
       - run:
-          name: Back-en
+          name: Scan back-end
           command: |
             cd backend
             npm install
