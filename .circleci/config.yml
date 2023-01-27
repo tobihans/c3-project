@@ -246,8 +246,11 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            sudo apt update && sudo apt install -y python3 tar gzip
-            pip install ansible
+            sudo apt update
+            sudo apt upgrade
+            sudo apt install -y tar gzip software-properties-common
+            sudo apt-add-repository ppa:ansible/ansible
+            sudo apt install ansible
       - run:
           name: Get backend url
           command: |
@@ -279,8 +282,11 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            sudo apt update && sudo apt install -y python3 tar gzip
-            pip install ansible
+            sudo apt update
+            sudo apt upgrade
+            sudo apt install -y tar gzip software-properties-common
+            sudo apt-add-repository ppa:ansible/ansible
+            sudo apt install ansible
       - run:
           name: Deploy backend
           command: |
@@ -309,7 +315,11 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            sudo apt update && sudo apt install -y curl
+            sudo apt update
+            sudo apt upgrade
+            sudo apt install -y curl tar gzip software-properties-common
+            sudo apt-add-repository ppa:ansible/ansible
+            sudo apt install ansible
       - run:
           name: Get backend url
           command: |
