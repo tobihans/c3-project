@@ -182,7 +182,7 @@ jobs:
             cat \<<END >.circleci/ansible/inventory.txt
             [web]
             $(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress'\
-              --filters 'Name=tag:Project,Values=udapeople' --output text
+              --filters 'Name=tag:project,Values=udapeople' --output text
             )
             END
       - persist_to_workspace:
