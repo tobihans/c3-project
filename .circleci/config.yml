@@ -180,7 +180,7 @@ jobs:
           name: Add back-end ip to ansible inventory
           command: |
             cat \<<END >.circleci/ansible/inventory.txt
-            [all]
+            [web]
             $(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress'\
               --filters 'Name=tag:Project,Values=udapeople' --output text
             )
@@ -191,23 +191,26 @@ jobs:
             - project/.circleci/ansible/inventory.txt
       - destroy-environment
 
-#   configure-infrastructure:
-#     docker:
-#       # Docker image here that supports Ansible
-#     steps:
-#       # Checkout code from git
-#       # Add ssh keys with fingerprint
-#       # attach workspace
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # Your code here
-#             exit 1
-#       - run:
-#           name: Configure server
-#           command: |
-#             # Your code here
-#             exit 1
+  configure-infrastructure:
+    docker:
+      - image: ansible/ansible
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - 35:31:aa:e0:4b:70:83:ce:5d:32:61:a6:77:d4:48:9b
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+            # Your code here
+            exit 1
+      - run:
+          name: Configure server
+          command: |
+            # Your code here
+            exit 1
 #       # Here's where you will add some code to rollback on failure      
 #
 #   run-migrations:
