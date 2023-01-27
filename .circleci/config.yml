@@ -228,9 +228,13 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-              curl https://kvdb.io/39H94wC8qL4erPF4vuBwy6/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+              curl "https://api.thisdb.com/v1/tkKxpzEq4eav0uHNZ8jGwXSn/migration_${CIRCLE_WORKFLOW_ID:0:7}"
+                -H "X-Api-Key: $THIS_DB_API_KEY"
+                -d '1'
             else
-              curl https://kvdb.io/39H94wC8qL4erPF4vuBwy6/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '0'
+              curl "https://api.thisdb.com/v1/tkKxpzEq4eav0uHNZ8jGwXSn/migration_${CIRCLE_WORKFLOW_ID:0:7}"
+                -H "X-Api-Key: $THIS_DB_API_KEY"
+                -d '0'
             fi
       - destroy-environment
 
