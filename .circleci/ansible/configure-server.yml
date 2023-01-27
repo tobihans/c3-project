@@ -13,8 +13,8 @@
     - ansible_stdout_callback: yaml
 
   pre_tasks:
-    - name: "wait 360 seconds for target connection to become reachable/usable."
-      shell: sleep 360s
+    - name: "wait 240 seconds for target connection to become reachable/usable."
+      shell: sleep 240
 
   environment:
     - TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION')}}"
