@@ -17,8 +17,6 @@ commands:
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
-    # parameters:
-      # Add parameter here     
     steps:
       - run:
           name: Revert migrations
@@ -26,7 +24,7 @@ commands:
           command: |
             SUCCESS=$(curl "https://api.thisdb.com/v1/tkKxpzEq4eav0uHNZ8jGwXSn/migration_${CIRCLE_WORKFLOW_ID:0:7}" -H "X-Api-Key: $THIS_DB_API_KEY") 
 
-            if [[ "$success" -eq "0" ]]; 
+            if [[ "$success" -eq "1" ]]; 
             then
               cd ~/project/backend
               npm install
