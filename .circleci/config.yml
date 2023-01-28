@@ -302,7 +302,6 @@ jobs:
 
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
-            echo << pipeline.id >> == ${CIRCLE_WORKFLOW_ID}
             cat inventory.txt
 
             ansible-playbook -i inventory.txt deploy-backend.yml

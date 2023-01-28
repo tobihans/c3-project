@@ -1,15 +1,15 @@
 ---
-- name: copy artifact
-  copy:
+- name: create app directory
+  file:
+    path: ~/app
+    state: directory
+
+- name: unpack artifact
+  unarchive:
     src: artifact.tar.gz
-    dest: ~/artifact.tar.gz
+    dest: ~/app
 
-- name: extract the app
-  shell: |
-    mkdir ~/app && cd ~/app
-    tar xzvf ~/artifact.tar.gz
-
-- name: start the app
+- name: start app
   become: true
   shell: |
     cd ~/app
