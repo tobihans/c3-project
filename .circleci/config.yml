@@ -366,7 +366,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/cloudfront.yml \
-              --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7} \
+              --stack-name udapeople-cloudfront-${CIRCLE_WORKFLOW_ID:0:7} \
               --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople
       - destroy-environment 
@@ -378,19 +378,22 @@ cleanup:
     steps:
       - checkout
       - run:
-          name: Get old stack workflow id
+          name: Get old stacks
           command: |
-            # your code here
-            export OldWorkflowID="the id here"
-            export STACKS=[] #put the list of stacks here
+            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
+            --stack-status-filter CREATE_COMPLETE --no-paginate --output text \
+            | grep udapeople | grep -v ${CIRCLE_WORKFLOW_ID:0:7})) 
       - run:
           name: Remove old stacks and files
           command: |
-            if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
-            then
-              # your code here
-            fi
+            OLD_WORKFLOW_IDS=($(echo $STACKS | sed -r 's/udapeople-(frontend|backend)-//g' | tr " " "\n" | uniq))
             
+            for id in $OLD_WORKFLOW_IDS
+            do
+              aws s3 rm "s3://udapeople-${id}" --recursive
+              aws cloudformation delete-stack --stack-name "udapeople-backend-${id}"
+              aws cloudformation delete-stack --stack-name "udapeople-frontend-${id}"
+            done
 
 workflows:
   default:
@@ -437,6 +440,6 @@ workflows:
       - cloudfront-update:
           requires:
             - smoke-test
-      # - cleanup:
-      #     requires:
-      #       - cloudfront-update
+      - cleanup:
+          requires:
+            - cloudfront-update
