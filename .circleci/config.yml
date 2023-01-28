@@ -387,6 +387,7 @@ jobs:
           name: Remove old stacks and files
           command: |
             OLD_WORKFLOW_IDS=($(echo $STACKS | sed -r 's/udapeople-(frontend|backend)-//g' | tr " " "\n" | uniq))
+            echo Workflows: $OLD_WORKFLOW_IDS
             
             for id in $OLD_WORKFLOW_IDS
             do
