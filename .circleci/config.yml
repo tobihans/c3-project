@@ -249,7 +249,7 @@ jobs:
             apt update
             apt upgrade -y
             apt install -y tar gzip software-properties-common
-            apt-add-repository ppa:ansible/ansible
+            apt-add-repository ppa:ansible/ansible -y
             apt install -y ansible
       - run:
           name: Get backend url
@@ -285,7 +285,7 @@ jobs:
             apt update
             apt upgrade -y
             apt install -y tar gzip software-properties-common
-            apt-add-repository ppa:ansible/ansible
+            apt-add-repository ppa:ansible/ansible -y
             apt install -y ansible
       - run:
           name: Deploy backend
@@ -318,7 +318,7 @@ jobs:
             apt update
             apt upgrade -y
             apt install -y curl tar gzip software-properties-common
-            apt-add-repository ppa:ansible/ansible
+            apt-add-repository ppa:ansible/ansible -y
             apt install -y ansible
       - run:
           name: Get backend url
