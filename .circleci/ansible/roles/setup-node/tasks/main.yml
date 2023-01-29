@@ -2,7 +2,7 @@
 - name: add a new user for node exporter
   become: true
   shell: |
-    useradd --no-create-home node_exporter
+    id node_exporter || useradd --no-create-home node_exporter
 
 - name: download and install prometheus node exporter
   become: true
