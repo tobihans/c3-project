@@ -1,0 +1,70 @@
+---
+# See https://devopscube.com/install-configure-prometheus-linux/
+- name: configure app directory
+  become: true
+  shell: |
+    mkdir /var/lib/alertmanager
+    chown prometheus:prometheus /var/lib/alertmanager
+
+- name: download and install AlertManager
+  become: true
+  shell: |
+    # Download AlertManager
+    wget https://github.com/prometheus/alertmanager/releases/download/v0.25.0/alertmanager-0.25.0.linux-amd64.tar.gz
+    tar xvfz alertmanager-0.25.0.linux-amd64.tar.gz
+
+    cp alertmanager-0.25.0.linux-amd64/alertmanager /usr/local/bin
+    cp alertmanager-0.25.0.linux-amd64/amtool /usr/local/bin/
+    rm -rf alertmanager*
+    
+    # Configure permissions
+    chown prometheus:prometheus /usr/local/bin/alertmanager
+    chown prometheus:prometheus /usr/local/bin/amtool
+
+- name: copy config file
+  become: true
+  copy:
+    src: alertmanager.yml
+    dest: /etc/prometheus/alertmanager.yml
+
+- name: Configure SMTP credentials
+  become: true
+  shell: |
+    sed -i.bak /etc/prometheus/alertmanager.yml \
+      -e "s#TO#${TO}#" \
+      -e "s#SMTP_HOST#${SMTP_HOST}#" \
+      -e "s#AUTH_USERNAME#${AUTH_USERNAME}#" \
+      -e "s#AUTH_IDENTITY#${AUTH_IDENTITY}#" \
+      -e "s#AUTH_PASSWORD#${AUTH_PASSWORD}#"
+
+- name: configure a service for AlertManager
+  become: true
+  shell: |
+    cat <<END >/etc/systemd/system/alertmanager.service
+    [Unit]
+    Description=AlertManager
+    Wants=network-online.target
+    After=network-online.target
+
+    [Service]
+    User=prometheus
+    Group=prometheus
+    Type=simple
+    ExecStart=/usr/local/bin/alertmanager \
+      --config.file /etc/prometheus/alertmanager.yml \
+      --storage.path /var/lib/alertmanager/
+
+    Restart=always
+
+    [Install]
+    WantedBy=multi-user.target
+    END
+
+- name: starts alertmanager
+  become: true
+  shell: |
+    systemctl daemon-reload
+    systemctl enable alertmanager
+    systemctl start alertmanager
+    systemctl status alertmanager
+

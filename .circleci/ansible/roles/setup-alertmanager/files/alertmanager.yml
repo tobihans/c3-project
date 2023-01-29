@@ -1,0 +1,15 @@
+route:
+  group_by:
+    - Alertname
+  receiver: email-me
+
+receivers:
+- name: email-me
+  email_configs:
+  - to: TO
+    from: alert@udapeople.com
+    smarthost: SMTP_HOST
+    auth_username: AUTH_USERNAME
+    auth_identity: AUTH_IDENTITY
+    auth_password: AUTH_PASSWORD
+

@@ -36,6 +36,12 @@
     src: prometheus.yml
     dest: /etc/prometheus/prometheus.yml
 
+- name: copy rules file
+  become: true
+  copy:
+    src: rules.yml
+    dest: /etc/prometheus/rules.yml
+
 - name: Configure AWS credentials
   become: true
   shell: |
