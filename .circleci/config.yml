@@ -382,22 +382,14 @@ jobs:
       - run:
           name: Remove old stacks and files
           command: |
-            STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
-            --stack-status-filter CREATE_COMPLETE --no-paginate --output text \
-            | grep udapeople | grep -v ${CIRCLE_WORKFLOW_ID:0:7})) 
-
-            OLD_WORKFLOW_IDS=($(echo $STACKS | sed -r 's/udapeople-(frontend|backend)-//g' | tr " " "\n" | uniq))
-
-            echo "OLD STACKS: ${STACKS[@]}"
-
-            echo "Old Workflow IDs: ${OLD_WORKFLOW_IDS[@]}"
-            
-            for id in $OLD_WORKFLOW_IDS
-            do
-              aws s3 rm "s3://udapeople-${id}" --recursive
-              aws cloudformation delete-stack --stack-name "udapeople-backend-${id}"
-              aws cloudformation delete-stack --stack-name "udapeople-frontend-${id}"
-            done
+            aws cloudformation list-stacks --query "StackSummaries[*].StackName" --stack-status-filter CREATE_COMPLETE --no-paginate --output text \
+              | sed -r 's/\s+/\n/g' \
+              | grep udapeople \
+              | grep -v ${CIRCLE_WORKFLOW_ID:0:7} \
+              | sed -r 's/udapeople-(frontend|backend)-//g' \
+              | uniq \
+              | xargs -I{} \
+              bash -c "aws s3 rm s3://udapeople-{} --recursive;aws cloudformation delete-stack --stack-name udapeople-backend-{};aws cloudformation delete-stack --stack-name udapeople-frontend-{};"
 
 workflows:
   default:
