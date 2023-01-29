@@ -380,16 +380,17 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Get old stacks
-          command: |
-            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
-            --stack-status-filter CREATE_COMPLETE --no-paginate --output text \
-            | grep udapeople | grep -v ${CIRCLE_WORKFLOW_ID:0:7})) 
-      - run:
           name: Remove old stacks and files
           command: |
+            STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
+            --stack-status-filter CREATE_COMPLETE --no-paginate --output text \
+            | grep udapeople | grep -v ${CIRCLE_WORKFLOW_ID:0:7})) 
+
             OLD_WORKFLOW_IDS=($(echo $STACKS | sed -r 's/udapeople-(frontend|backend)-//g' | tr " " "\n" | uniq))
-            echo "Workflows: ${OLD_WORKFLOW_IDS[@]}"
+
+            echo "OLD STACKS: ${STACKS[@]}"
+
+            echo "Old Workflow IDs: ${OLD_WORKFLOW_IDS[@]}"
             
             for id in $OLD_WORKFLOW_IDS
             do
